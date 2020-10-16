@@ -35,7 +35,6 @@ export default {
         } = request.body;
 
         const orphanagesRepository = getRepository(Orphanage);
-        console.log(request.files);
 
 
         const requestImages = request.files as Express.Multer.File[];
@@ -50,7 +49,7 @@ export default {
             about,
             instructions,
             opening_hours,
-            open_on_weekends,
+            open_on_weekends: open_on_weekends === 'true',
             images
         }
 
@@ -79,4 +78,4 @@ export default {
 
         return response.status(201).json(orphanages)
     }
-}
+} 
