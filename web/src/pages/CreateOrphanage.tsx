@@ -19,18 +19,19 @@ export default function CreateOrphanage() {
   const [instructions, setInstructions] = useState('');
   const [opening_hours, setOpeningHours] = useState('');
   const [open_on_weekends, setOpeningOnWeekends] = useState(true);
+  const [contact, setContact] = useState('');
   const [images, setImages] = useState<File[]>([]);
-  const [mapPosition, setMapPosition] = useState({latitude:0 , longitude:0})
+  const [mapPosition, setMapPosition] = useState({ latitude: 0, longitude: 0 })
 
   const [previewImages, setPreviewImages] = useState<string[]>([])
-  useEffect(()=>{
-    navigator.geolocation.getCurrentPosition((position=>{
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((position => {
       console.log(position);
-      const {latitude, longitude} = position.coords;
-      setMapPosition({latitude, longitude})
-      
+      const { latitude, longitude } = position.coords;
+      setMapPosition({ latitude, longitude })
+
     }))
-  },[])
+  }, [])
 
   function handlerMapClick(event: LeafletMouseEvent) {
     const { lat, lng } = event.latlng;
@@ -58,6 +59,11 @@ export default function CreateOrphanage() {
 
   }
 
+  function ValidateIsNumber(event: ChangeEvent<HTMLInputElement>){
+    const {value} = event.target
+    setContact(value)    
+  }
+
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     const { latitude, longitude } = position;
@@ -69,6 +75,7 @@ export default function CreateOrphanage() {
     data.append("about", about);
     data.append("instructions", instructions);
     data.append("opening_hours", opening_hours);
+    data.append("contact", contact);
     data.append("open_on_weekends", String(open_on_weekends));
     data.append("images", String(images));
     images.forEach(image => {
@@ -82,6 +89,7 @@ export default function CreateOrphanage() {
 
 
   }
+
 
   return (
     <div id="page-create-orphanage">
@@ -112,12 +120,15 @@ export default function CreateOrphanage() {
               <input
                 id="name"
                 value={name}
-                onChange={(event) => setName(event.target.value)} />
+                onChange={(event) => setName(event.target.value)}
+                required
+              />
             </div>
 
             <div className="input-block">
               <label htmlFor="about">Sobre <span>Máximo de 300 caracteres</span></label>
               <textarea id="name"
+                required
                 value={about}
                 onChange={(event) => setAbout(event.target.value)}
                 maxLength={300} />
@@ -166,6 +177,19 @@ export default function CreateOrphanage() {
                 id="opening_hours"
                 onChange={(event) => { setOpeningHours(event.target.value) }}
                 value={opening_hours}
+                required
+              />
+            </div>
+
+            <div className="input-block">
+              <label htmlFor="whatsAppp">WhatsApp</label>
+              <input
+                id="whatsAppp"
+                onChange={ValidateIsNumber}
+                value={contact}
+                inputMode="tel"
+                maxLength={11}
+                required
               />
             </div>
 
